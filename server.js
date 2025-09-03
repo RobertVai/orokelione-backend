@@ -8,14 +8,16 @@ const authRoutes = require("./routes/auth");
 const app = express();
 
 const ORIGINS = (process.env.CORS_ORIGIN || "")
-  .split(",")
-  .map(s => s.trim())
-  .filter(Boolean);
+  .split(",").map(s => s.trim()).filter(Boolean);
+
+
+const VERCEL_PREVIEW_RE = /^https:\/\/orokelione-[a-z0-9-]+-robertvais-projects\.vercel\.app$/;
 
 const corsOptions = {
   origin(origin, cb) {
     if (!origin) return cb(null, true);
     if (ORIGINS.includes(origin)) return cb(null, true);
+    if (VERCEL_PREVIEW_RE.test(origin)) return cb(null, true); 
     return cb(new Error("Not allowed by CORS"));
   },
   credentials: false,
